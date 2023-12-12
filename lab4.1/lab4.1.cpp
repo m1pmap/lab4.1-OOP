@@ -1,11 +1,4 @@
-﻿//Задание:
-//Создать адаптер контейнера(queue).Заполнить его элементами пользовательского
-//типа по вариантам(Time и float).Добавить элементы в соответствии с 
-//заданием(разницу максимального и минимального в конец). Удалить элементы в 
-//соответствии с заданием(Элементы меньшие среднего арифметического)
-
-
-#include <iostream>
+﻿#include <iostream>
 #include <Queue>
 #include <list>
 
@@ -103,9 +96,25 @@ public:
 	}
 };
 
+
+void PrintDeque(queue<Time> queueContainer)
+{
+	std::deque<Time> dq = queueContainer._Get_container();
+	for (auto i = dq.begin(); i != dq.end(); ++i)
+		(*i).PrintTime();
+}
+
+void PrintDeque(queue<float> queueContainer)
+{
+	std::deque<float> dq = queueContainer._Get_container();
+	for (auto i = dq.begin(); i != dq.end(); ++i)
+		cout << (*i) << endl;
+}
+
+
 int main()
 {
-	Time midnight(0,3);
+	Time midnight(0, 3);
 	Time deepNight(2, 17);
 	Time night(4, 45);
 	Time earlyMorning(7, 0);
@@ -114,25 +123,24 @@ int main()
 	Time afternoon(19, 57);
 	Time lateAfternoon(21, 32);
 
-	queue<Time> queueContainer;
+	queue<Time> queueTimeContainer;
 
-	queueContainer.push(midnight);
-	queueContainer.push(deepNight);
-	queueContainer.push(night);
-	queueContainer.push(earlyMorning);
-	queueContainer.push(lateMorning);
-	queueContainer.push(dayTime);
-	queueContainer.push(afternoon);
-	queueContainer.push(lateAfternoon);
+	queueTimeContainer.push(midnight);
+	queueTimeContainer.push(deepNight);
+	queueTimeContainer.push(night);
+	queueTimeContainer.push(earlyMorning);
+	queueTimeContainer.push(lateMorning);
+	queueTimeContainer.push(dayTime);
+	queueTimeContainer.push(afternoon);
+	queueTimeContainer.push(lateAfternoon);
 
-	std::deque<Time> dq = queueContainer._Get_container();
 	cout << "Queue with time-objects:" << endl;
-	for (auto i = dq.begin(); i != dq.end(); ++i)
-		(*i).PrintTime();
+	PrintDeque(queueTimeContainer);
 
 	Time maxTime;
 	Time minTime(23, 59);
 
+	std::deque<Time> dq = queueTimeContainer._Get_container();
 	for (auto i = dq.begin(); i != dq.end(); ++i)
 	{
 		if ((*i) > maxTime)
@@ -143,34 +151,77 @@ int main()
 
 	cout << endl;
 
-	queueContainer.push(maxTime - minTime);
+	queueTimeContainer.push(maxTime - minTime);
 
 	cout << "Adding:" << endl;
-	dq = queueContainer._Get_container();
-	for (auto i = dq.begin(); i != dq.end(); ++i)
-		(*i).PrintTime();
+	PrintDeque(queueTimeContainer);
 
 	Time avg;
 	for (auto i = dq.begin(); i != dq.end(); ++i)
 		avg = avg + (*i);
-	avg = avg / queueContainer.size();
+	avg = avg / queueTimeContainer.size();
 
-	std::vector<Time> buff;
+	vector<Time> buff;
 
-	while (!queueContainer.empty()) {
-		Time value = queueContainer.front();
+	while (!queueTimeContainer.empty()) {
+		Time value = queueTimeContainer.front();
 		buff.push_back(value);
-		queueContainer.pop();
+		queueTimeContainer.pop();
 	}
 
-	for (Time value : buff) {
-		if (value > avg) {
-			queueContainer.push(value);
-		}
-	}
+	for (Time value : buff)
+		if (value > avg)
+			queueTimeContainer.push(value);
 
 	cout << "\nRemove:" << endl;
-	dq = queueContainer._Get_container();
-	for (auto i = dq.begin(); i != dq.end(); ++i)
-		(*i).PrintTime();
+	PrintDeque(queueTimeContainer);
+
+	queue<float> floatQueue;
+
+	floatQueue.push(2.1);
+	floatQueue.push(4.0);
+	floatQueue.push(0.7);
+	floatQueue.push(5.3);
+
+	float min = 100;
+	float max = 0;
+
+	cout << "\nQueue with float:" << endl;
+	PrintDeque(floatQueue);
+
+	std::deque<float> floatDq = floatQueue._Get_container();
+	for (auto i = floatDq.begin(); i != floatDq.end(); ++i)
+	{
+		if ((*i) > max)
+			max = (*i);
+		if (min > (*i))
+			min = (*i);
+	}
+
+	floatQueue.push(max - min);
+
+	cout << "\nAdding:" << endl;
+	PrintDeque(floatQueue);
+
+	floatDq = floatQueue._Get_container();
+
+	float avgFloat = 0;
+	for (auto i = floatDq.begin(); i != floatDq.end(); ++i)
+		avgFloat = avgFloat + (*i);
+	avgFloat = avgFloat / floatQueue.size();
+	
+	vector<float> buffFloat;
+
+	while (!floatQueue.empty()) {
+		float value = floatQueue.front();
+		buffFloat.push_back(value);
+		floatQueue.pop();
+	}
+
+	for (float value : buffFloat)
+		if (value > avgFloat)
+			floatQueue.push(value);
+
+	cout << "\nRemove:" << endl;
+	PrintDeque(floatQueue);
 }
